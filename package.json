@@ -1,0 +1,17 @@
+{
+  "name": "trivechain-qt-wallet-migrator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bignumber.js": "^9.0.1",
+    "ethers": "^5.1.4",
+    "@trivechain/trivechaincore-lib": "git+https://github.com/trivechain/trivechaincore-lib.git"
+  }
+}
