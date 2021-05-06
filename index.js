@@ -56,20 +56,24 @@ const main = async (walletfile, receivingAddress) => {
         return;
     }
 
+    console.log(privateKeys.length, " private key found!");
+
     if (!Address.isValid(receivingAddress, Networks.livenet)) {
         console.error("Receiving Address not valid")
         return;
     }
+    console.log("Migrating to : ", receivingAddress);
 
     let addressesUtxoByBatch = { 0: [] };
     let batchNum = 0;
 
     // loop for all private keys
     for (let inputPrivateKey of privateKeys) {
-
         const privateKey = PrivateKey.fromWIF(inputPrivateKey);
         const publicKey = new PublicKey(privateKey)
         const fromAddress = new Address(publicKey, Networks.livenet).toString();
+
+        console.log("Scanning Address: ", fromAddress);
 
         let addressRes;
         await axiosInstance.get(`https://api.trivechain.com/address/balance/trvc/${fromAddress}`)
@@ -107,8 +111,13 @@ const main = async (walletfile, receivingAddress) => {
             }
             addressesUtxoByBatch[batchNum].push({ ...u, privateKey: privateKey })
         }
+
+        if (batchNum > 100) {
+            break;
+        }
     }
 
+    console.log("Migrating")
     for (let j = 0; j <= batchNum; j++) {
         let assetUtxos = [], satoshiToSend = new BigNumber(0), utxos = [], build = false, privateKeyToSign = [];
         let addressesUtxo = addressesUtxoByBatch[j]
